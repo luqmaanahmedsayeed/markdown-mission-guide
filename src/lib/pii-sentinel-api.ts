@@ -25,9 +25,9 @@ import {
 const SCAN_PATH = "/api/scan";
 const REDACT_PATH = "/api/redact";
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/+$/, "");
+const API_BASE = (import.meta.env["VITE_API_BASE_URL"] ?? "").trim().replace(/\/+$/, "");
 /** Mock fixtures are on until the team explicitly sets VITE_USE_MOCK_API=false. */
-export const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== "false";
+export const USE_MOCK_API = import.meta.env["VITE_USE_MOCK_API"] !== "false";
 
 /** True when live backend calls are allowed (i.e. mock mode is switched off). */
 export function isBackendConnected(): boolean {
@@ -70,22 +70,22 @@ function normalizeScanResponse(raw: unknown): ScanResponse {
     message?: string;
   };
   const findings = data.findings as PiiFinding[];
-  const mode: ScanMode = data.mode === "demo" ? "demo" : "live";
-  return {
-    scanId: data.scanId,
-    fileName: data.fileName,
-    fileType: data.fileType,
-    totalFindings:
-      typeof data.totalFindings === "number" ? data.totalFindings : findings.length,
+  const derived = deriveRiskSummary(findings);
+  const response: ScanResponse = {
+    totalFindings: typeof data.totalFindings === "number" ? data.totalFindings : findings.length,
     riskSummary: {
-      high: data.riskSummary?.high ?? deriveRiskSummary(findings).high,
-      medium: data.riskSummary?.medium ?? deriveRiskSummary(findings).medium,
-      low: data.riskSummary?.low ?? deriveRiskSummary(findings).low,
+      high: data.riskSummary?.high ?? derived.high,
+      medium: data.riskSummary?.medium ?? derived.medium,
+      low: data.riskSummary?.low ?? derived.low,
     },
     findings,
-    mode,
-    message: data.message,
+    mode: data.mode === "demo" ? "demo" : "live",
   };
+  if (data.scanId !== undefined) response.scanId = data.scanId;
+  if (data.fileName !== undefined) response.fileName = data.fileName;
+  if (data.fileType !== undefined) response.fileType = data.fileType;
+  if (data.message !== undefined) response.message = data.message;
+  return response;
 }
 
 async function requestScan(body: BodyInit, headers?: HeadersInit): Promise<ScanResponse> {
@@ -93,7 +93,7 @@ async function requestScan(body: BodyInit, headers?: HeadersInit): Promise<ScanR
   try {
     res = await fetch(endpoint(SCAN_PATH), {
       method: "POST",
-      headers,
+      ...(headers ? { headers } : {}),
       body,
     });
   } catch {
@@ -158,8 +158,8 @@ export async function redactInput(request: RedactRequest): Promise<RedactRespons
   if (!res.ok) throw new Error(friendlyHttpError(res.status));
 
   const contentType = res.headers.get("content-type") ?? "";
-  const base = {
-    mode: "live" as ScanMode,
+  const response: RedactResponse = {
+    mode: "live",
     strategy,
     processedCount: selectedFindingIds.length,
   };
@@ -181,25 +181,21 @@ export async function redactInput(request: RedactRequest): Promise<RedactRespons
     if (typeof data.sanitizedText !== "string" && typeof data.downloadUrl !== "string") {
       throw new Error("The redaction service did not return a sanitized artifact.");
     }
-    return {
-      ...base,
-      fileName: data.fileName,
-      fileType: data.fileType,
-      sanitizedText: data.sanitizedText,
-      downloadUrl: data.downloadUrl,
-      downloadFileName: data.downloadFileName,
-      processedCount: data.processedCount ?? base.processedCount,
-      message: data.message,
-    };
+    if (data.sanitizedText !== undefined) response.sanitizedText = data.sanitizedText;
+    if (data.downloadUrl !== undefined) response.downloadUrl = data.downloadUrl;
+    if (data.downloadFileName !== undefined) response.downloadFileName = data.downloadFileName;
+    if (data.fileName !== undefined) response.fileName = data.fileName;
+    if (data.fileType !== undefined) response.fileType = data.fileType;
+    if (data.processedCount !== undefined) response.processedCount = data.processedCount;
+    if (data.message !== undefined) response.message = data.message;
+    return response;
   }
 
   // Binary artifact: hand the blob URL to the UI for download.
   const blob = await res.blob();
   const disposition = res.headers.get("content-disposition") ?? "";
   const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition);
-  return {
-    ...base,
-    downloadUrl: URL.createObjectURL(blob),
-    downloadFileName: match?.[1] ?? "pii-sentinel-sanitized-copy",
-  };
+  response.downloadUrl = URL.createObjectURL(blob);
+  response.downloadFileName = match?.[1] ?? "pii-sentinel-sanitized-copy";
+  return response;
 }

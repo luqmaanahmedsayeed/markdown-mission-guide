@@ -107,7 +107,7 @@ export function InputWorkspace(props: InputWorkspaceProps) {
     !scanning &&
     (mode === "demo" || (mode === "file" && file !== null) || (mode === "text" && text.trim().length > 0));
 
-  const activeMode = MODES.find((m) => m.id === mode) ?? MODES[0];
+  const activeMode = MODES.find((m) => m.id === mode);
   const notConnectedError = error !== null && !backendConnected;
 
   return (
@@ -115,7 +115,7 @@ export function InputWorkspace(props: InputWorkspaceProps) {
       <div className="mb-4 flex items-baseline justify-between gap-4 border-b border-line pb-3">
         <h2 className="font-display text-xl font-bold uppercase tracking-tight">Input</h2>
         <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-          {activeMode.hint}
+          {activeMode?.hint}
         </span>
       </div>
 
