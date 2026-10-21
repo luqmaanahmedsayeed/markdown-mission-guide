@@ -158,7 +158,11 @@ export function WorkspacePage() {
     mode === "file" ? "Uploaded file" : mode === "text" ? "Pasted text" : "Synthetic demo";
 
   return (
-    <div id="top" className="min-h-screen bg-background text-foreground">
+    <div
+      id="top"
+      className="min-h-screen bg-background text-foreground"
+      suppressHydrationWarning
+    >
       <AppHeader demoMode={!backendConnected} />
       <FormatStrip />
 
