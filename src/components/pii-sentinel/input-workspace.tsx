@@ -105,7 +105,9 @@ export function InputWorkspace(props: InputWorkspaceProps) {
 
   const canScan =
     !scanning &&
-    (mode === "demo" || (mode === "file" && file !== null) || (mode === "text" && text.trim().length > 0));
+    (mode === "demo" ||
+      (mode === "file" && file !== null) ||
+      (mode === "text" && text.trim().length > 0));
 
   const activeMode = MODES.find((m) => m.id === mode);
   const notConnectedError = error !== null && !backendConnected;
@@ -184,7 +186,10 @@ export function InputWorkspace(props: InputWorkspaceProps) {
           </div>
 
           {fileError ? (
-            <p role="alert" className="mt-3 border border-spicy bg-paper px-3 py-2 font-mono text-xs text-spicy">
+            <p
+              role="alert"
+              className="mt-3 border border-spicy bg-paper px-3 py-2 font-mono text-xs text-spicy"
+            >
               {fileError}
             </p>
           ) : null}
@@ -216,7 +221,10 @@ export function InputWorkspace(props: InputWorkspaceProps) {
       {/* Text mode */}
       {mode === "text" ? (
         <div>
-          <label htmlFor="paste-text" className="mb-2 block font-mono text-xs font-medium uppercase tracking-widest">
+          <label
+            htmlFor="paste-text"
+            className="mb-2 block font-mono text-xs font-medium uppercase tracking-widest"
+          >
             Text to review
           </label>
           <textarea
@@ -246,8 +254,9 @@ export function InputWorkspace(props: InputWorkspaceProps) {
       {mode === "demo" ? (
         <div className="border border-line bg-paper px-4 py-4">
           <p className="font-serif text-base leading-relaxed">
-            Loads <span className="font-mono text-sm">synthetic-demo-scholarship-application.txt</span> — a clearly
-            labelled fictional document containing several finding types.
+            Loads{" "}
+            <span className="font-mono text-sm">synthetic-demo-scholarship-application.txt</span> —
+            a clearly labelled fictional document containing several finding types.
           </p>
           <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-spicy">
             Synthetic fixtures only — no file or text of yours is analysed.

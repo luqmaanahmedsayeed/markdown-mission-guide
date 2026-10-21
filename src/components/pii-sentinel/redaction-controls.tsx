@@ -16,7 +16,11 @@ interface RedactionControlsProps {
 
 const STRATEGIES = [
   { id: "mask" as const, label: "Mask", hint: "Partially hide the value (e.g. •••• 4321)." },
-  { id: "replace" as const, label: "Replace", hint: "Substitute a label such as [EMAIL] or [PHONE]." },
+  {
+    id: "replace" as const,
+    label: "Replace",
+    hint: "Substitute a label such as [EMAIL] or [PHONE].",
+  },
   { id: "remove" as const, label: "Remove", hint: "Delete the selected matched text." },
   { id: "custom" as const, label: "Custom replacement", hint: "Substitute your own placeholder." },
 ] as const;
@@ -52,7 +56,9 @@ export function RedactionControls(props: RedactionControlsProps) {
           <label
             key={s.id}
             className={`flex cursor-pointer flex-col gap-1 border px-3 py-3 transition-colors ${
-              strategy === s.id ? "border-spicy bg-paper" : "border-line bg-background hover:border-ink"
+              strategy === s.id
+                ? "border-spicy bg-paper"
+                : "border-line bg-background hover:border-ink"
             }`}
           >
             <span className="flex items-center gap-2 font-mono text-xs font-medium uppercase tracking-widest">
@@ -73,7 +79,10 @@ export function RedactionControls(props: RedactionControlsProps) {
 
       {strategy === "custom" ? (
         <div className="mt-3">
-          <label htmlFor="custom-replacement" className="mb-1 block font-mono text-xs font-medium uppercase tracking-widest">
+          <label
+            htmlFor="custom-replacement"
+            className="mb-1 block font-mono text-xs font-medium uppercase tracking-widest"
+          >
             Custom placeholder
           </label>
           <input
@@ -88,7 +97,10 @@ export function RedactionControls(props: RedactionControlsProps) {
       ) : null}
 
       {error ? (
-        <p role="alert" className="mt-3 border border-spicy bg-paper px-3 py-2 font-mono text-xs text-spicy">
+        <p
+          role="alert"
+          className="mt-3 border border-spicy bg-paper px-3 py-2 font-mono text-xs text-spicy"
+        >
           {error}
         </p>
       ) : null}

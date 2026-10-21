@@ -39,8 +39,10 @@ function endpoint(path: string): string {
 }
 
 function friendlyHttpError(status: number): string {
-  if (status === 401 || status === 403) return "The scan service rejected this request. Check backend configuration.";
-  if (status === 404) return "The scan service endpoint was not found. Confirm the backend deployment.";
+  if (status === 401 || status === 403)
+    return "The scan service rejected this request. Check backend configuration.";
+  if (status === 404)
+    return "The scan service endpoint was not found. Confirm the backend deployment.";
   if (status === 413) return "The file is too large for the scan service.";
   if (status >= 500) return "The scan service reported a server error. Please try again later.";
   return `The scan service returned an error (status ${status}).`;
@@ -97,7 +99,9 @@ async function requestScan(body: BodyInit, headers?: HeadersInit): Promise<ScanR
       body,
     });
   } catch {
-    throw new Error("Could not reach the scan service. Check your connection and the backend deployment.");
+    throw new Error(
+      "Could not reach the scan service. Check your connection and the backend deployment.",
+    );
   }
   if (!res.ok) throw new Error(friendlyHttpError(res.status));
   return normalizeScanResponse(await parseResponseBody(res));
@@ -153,7 +157,9 @@ export async function redactInput(request: RedactRequest): Promise<RedactRespons
       });
     }
   } catch {
-    throw new Error("Could not reach the redaction service. Check your connection and the backend deployment.");
+    throw new Error(
+      "Could not reach the redaction service. Check your connection and the backend deployment.",
+    );
   }
   if (!res.ok) throw new Error(friendlyHttpError(res.status));
 

@@ -24,7 +24,10 @@ export function AppHeader({ demoMode }: AppHeaderProps) {
             Demo mode
           </span>
         ) : null}
-        <nav aria-label="Page sections" className="ml-auto flex items-center gap-4 font-mono text-xs uppercase tracking-widest">
+        <nav
+          aria-label="Page sections"
+          className="ml-auto flex items-center gap-4 font-mono text-xs uppercase tracking-widest"
+        >
           <a href="#workspace" className="transition-colors hover:text-spicy">
             Workspace
           </a>

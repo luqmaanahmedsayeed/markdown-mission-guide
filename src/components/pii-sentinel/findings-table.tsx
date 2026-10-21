@@ -12,7 +12,11 @@ interface FindingsTableProps {
 function RiskBadge({ level }: { level: RiskLevel }) {
   const config = {
     high: { label: "High risk", icon: TriangleAlert, className: "border-spicy text-spicy" },
-    medium: { label: "Medium risk", icon: Circle, className: "border-foreground/40 text-foreground" },
+    medium: {
+      label: "Medium risk",
+      icon: Circle,
+      className: "border-foreground/40 text-foreground",
+    },
     low: { label: "Low risk", icon: Circle, className: "border-line text-muted-foreground" },
   } as const;
   const { label, icon: Icon, className } = config[level];
@@ -37,7 +41,8 @@ function formatLocation(finding: PiiFinding): string {
   if (typeof loc.page === "number") parts.push(`p. ${loc.page}`);
   if (typeof loc.row === "number") parts.push(`row ${loc.row}`);
   if (loc.column) parts.push(`col ${loc.column}`);
-  if (typeof loc.start === "number" && typeof loc.end === "number") parts.push(`chars ${loc.start}–${loc.end}`);
+  if (typeof loc.start === "number" && typeof loc.end === "number")
+    parts.push(`chars ${loc.start}–${loc.end}`);
   return parts.length > 0 ? parts.join(" · ") : "Not provided";
 }
 
@@ -54,7 +59,9 @@ function FindingRow({
   const fullValue = typeof finding.value === "string" ? finding.value : null;
 
   return (
-    <li className={`border-b border-line last:border-b-0 ${selected ? "bg-paper" : "bg-background"}`}>
+    <li
+      className={`border-b border-line last:border-b-0 ${selected ? "bg-paper" : "bg-background"}`}
+    >
       <div className="grid grid-cols-1 gap-x-4 gap-y-2 px-3 py-3 md:grid-cols-[2rem_10rem_minmax(0,1fr)_8rem_6rem_minmax(0,1fr)_2rem] md:items-start">
         {/* Selection */}
         <div className="flex items-center gap-2 md:block">
@@ -68,11 +75,15 @@ function FindingRow({
         </div>
 
         <Cell label="Category">
-          <span className="font-mono text-xs font-medium uppercase tracking-widest">{finding.category}</span>
+          <span className="font-mono text-xs font-medium uppercase tracking-widest">
+            {finding.category}
+          </span>
         </Cell>
 
         <Cell label="Matched value">
-          <span className="break-all font-mono text-xs">{finding.maskedValue ?? "Not provided"}</span>
+          <span className="break-all font-mono text-xs">
+            {finding.maskedValue ?? "Not provided"}
+          </span>
         </Cell>
 
         <Cell label="Risk">
@@ -95,10 +106,18 @@ function FindingRow({
               type="button"
               onClick={() => setRevealed((v) => !v)}
               aria-expanded={revealed}
-              aria-label={revealed ? `Hide full value of ${finding.category} finding` : `Reveal full value of ${finding.category} finding`}
+              aria-label={
+                revealed
+                  ? `Hide full value of ${finding.category} finding`
+                  : `Reveal full value of ${finding.category} finding`
+              }
               className="text-muted-foreground transition-colors hover:text-spicy"
             >
-              {revealed ? <EyeOff aria-hidden className="size-4" /> : <Eye aria-hidden className="size-4" />}
+              {revealed ? (
+                <EyeOff aria-hidden className="size-4" />
+              ) : (
+                <Eye aria-hidden className="size-4" />
+              )}
             </button>
           ) : null}
         </div>
@@ -147,7 +166,8 @@ export function FindingsTable({ findings, selectedIds, onToggle, onSetAll }: Fin
       if (riskFilter !== "all" && f.riskLevel !== riskFilter) return false;
       if (categoryFilter !== "all" && f.category !== categoryFilter) return false;
       if (q) {
-        const haystack = `${f.category} ${f.maskedValue ?? ""} ${f.explanation ?? ""}`.toLowerCase();
+        const haystack =
+          `${f.category} ${f.value ?? ""} ${f.maskedValue ?? ""} ${f.explanation ?? ""} ${f.recommendedAction ?? ""}`.toLowerCase();
         if (!haystack.includes(q)) return false;
       }
       return true;
@@ -214,7 +234,9 @@ export function FindingsTable({ findings, selectedIds, onToggle, onSetAll }: Fin
 
       {visible.length === 0 ? (
         <div className="border border-line bg-paper px-4 py-8 text-center">
-          <p className="font-serif text-base">No findings match the current filters or no findings were returned.</p>
+          <p className="font-serif text-base">
+            No findings match the current filters or no findings were returned.
+          </p>
           <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
             An empty report does not guarantee the document contains no sensitive information.
           </p>

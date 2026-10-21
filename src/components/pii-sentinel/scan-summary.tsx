@@ -44,8 +44,12 @@ export function ScanSummary({ result, inputLabel }: ScanSummaryProps) {
 
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex items-center gap-2 border border-ink bg-ink px-3 py-2.5 text-background">
-          <span className="font-display text-2xl font-bold leading-none">{result.totalFindings}</span>
-          <span className="font-mono text-[11px] uppercase tracking-widest opacity-80">Total findings</span>
+          <span className="font-display text-2xl font-bold leading-none">
+            {result.totalFindings}
+          </span>
+          <span className="font-mono text-[11px] uppercase tracking-widest opacity-80">
+            Total findings
+          </span>
         </div>
         <Count level="high" value={result.riskSummary.high} />
         <Count level="medium" value={result.riskSummary.medium} />
