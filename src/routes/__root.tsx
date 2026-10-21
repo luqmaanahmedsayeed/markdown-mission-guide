@@ -79,9 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "PII Sentinel — Document Privacy Preflight" },
-      { name: "description", content: "Scan Before You Share — a document privacy preflight tool." },
+      {
+        name: "description",
+        content: "Scan Before You Share — a document privacy preflight tool.",
+      },
       { property: "og:title", content: "PII Sentinel — Document Privacy Preflight" },
-      { property: "og:description", content: "Scan Before You Share — a document privacy preflight tool." },
+      {
+        property: "og:description",
+        content: "Scan Before You Share — a document privacy preflight tool.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

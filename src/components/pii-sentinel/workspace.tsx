@@ -20,11 +20,7 @@ import {
   applyDemoRedaction,
   buildDemoScanResponse,
 } from "@/lib/mock-scan-data";
-import type {
-  RedactResponse,
-  RedactionStrategy,
-  ScanResponse,
-} from "@/lib/pii-sentinel-types";
+import type { RedactResponse, RedactionStrategy, ScanResponse } from "@/lib/pii-sentinel-types";
 
 type Status = "idle" | "scanning" | "error" | "ready";
 
@@ -88,12 +84,16 @@ export function WorkspacePage() {
   }
 
   function tryDemo() {
+    setMode("demo");
+    setFile(null);
+    setText(DEMO_SAMPLE_TEXT);
     setError(null);
     setRedactError(null);
     setRedaction(null);
     setResult(buildDemoScanResponse());
     setSelectedIds(new Set());
     setStatus("ready");
+    document.getElementById("workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function toggleFinding(id: string) {
@@ -158,7 +158,11 @@ export function WorkspacePage() {
     mode === "file" ? "Uploaded file" : mode === "text" ? "Pasted text" : "Synthetic demo";
 
   return (
-    <div id="top" className="min-h-screen bg-background text-foreground">
+    <div
+      id="top"
+      className="min-h-screen bg-background text-foreground"
+      suppressHydrationWarning
+    >
       <AppHeader demoMode={!backendConnected} />
       <FormatStrip />
 
@@ -172,7 +176,8 @@ export function WorkspacePage() {
             Know what&apos;s inside before it leaves.
           </h1>
           <p className="mt-4 max-w-xl font-serif text-lg leading-relaxed text-muted-foreground">
-            Find personal information in documents, review the risk, and prepare a sanitized copy before sharing.
+            Find personal information in documents, review the risk, and prepare a sanitized copy
+            before sharing.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <button
@@ -261,20 +266,25 @@ export function WorkspacePage() {
             {HOW_IT_WORKS_STEPS.map((step) => (
               <li key={step.number} className="border border-line bg-background px-4 py-4">
                 <span className="font-mono text-sm font-medium text-spicy">{step.number}</span>
-                <h3 className="mt-1 font-display text-base font-bold uppercase tracking-tight">{step.title}</h3>
-                <p className="mt-1 font-serif text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+                <h3 className="mt-1 font-display text-base font-bold uppercase tracking-tight">
+                  {step.title}
+                </h3>
+                <p className="mt-1 font-serif text-sm leading-relaxed text-muted-foreground">
+                  {step.body}
+                </p>
               </li>
             ))}
           </ol>
           <p className="mt-6 max-w-3xl font-serif text-sm leading-relaxed text-muted-foreground">
-            PII Sentinel assesses potential privacy exposure. It does not determine whether a document has been leaked
-            online. Detection is indicative: it may miss data and can produce false positives, and a detected pattern
-            does not prove that an identifier is real or valid. No personal information is needed to use this page —
-            the sample data is synthetic.
+            PII Sentinel assesses potential privacy exposure. It does not determine whether a
+            document has been leaked online. Detection is indicative: it may miss data and can
+            produce false positives, and a detected pattern does not prove that an identifier is
+            real or valid. No personal information is needed to use this page — the sample data is
+            synthetic.
           </p>
           <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-            Live scanning and redaction are handled by the backend, which is not connected yet. No provider keys exist
-            in this frontend.
+            Live scanning and redaction are handled by the backend, which is not connected yet. No
+            provider keys exist in this frontend.
           </p>
         </div>
       </section>

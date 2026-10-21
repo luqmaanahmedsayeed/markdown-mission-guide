@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import type { RedactResponse } from "@/lib/pii-sentinel-types";
 
@@ -17,17 +18,30 @@ const STRATEGY_LABEL: Record<RedactResponse["strategy"], string> = {
 export function SanitizedPreview({ redaction, originalText }: SanitizedPreviewProps) {
   const isDemo = redaction.mode === "demo";
   const hasComparison = Boolean(redaction.sanitizedText && originalText);
-  const downloadHref =
-    redaction.downloadUrl ??
-    (redaction.sanitizedText
-      ? URL.createObjectURL(new Blob([redaction.sanitizedText], { type: "text/plain;charset=utf-8" }))
-      : null);
+  const [generatedDownloadUrl, setGeneratedDownloadUrl] = useState<string | null>(null);
   const downloadName = redaction.downloadFileName ?? "pii-sentinel-sanitized-copy.txt";
+
+  useEffect(() => {
+    if (redaction.downloadUrl || !redaction.sanitizedText) {
+      setGeneratedDownloadUrl(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(
+      new Blob([redaction.sanitizedText], { type: "text/plain;charset=utf-8" }),
+    );
+    setGeneratedDownloadUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [redaction.downloadUrl, redaction.sanitizedText]);
+
+  const downloadHref = redaction.downloadUrl ?? generatedDownloadUrl;
 
   return (
     <section aria-label="Sanitized preview">
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-4 border-b border-line pb-3">
-        <h2 className="font-display text-xl font-bold uppercase tracking-tight">Sanitized preview</h2>
+        <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+          Sanitized preview
+        </h2>
         <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
           {redaction.processedCount} finding{redaction.processedCount === 1 ? "" : "s"} processed ·{" "}
           {STRATEGY_LABEL[redaction.strategy]}
@@ -71,7 +85,8 @@ export function SanitizedPreview({ redaction, originalText }: SanitizedPreviewPr
       ) : (
         <div className="border border-line bg-paper px-4 py-6 text-center">
           <p className="font-serif text-base">
-            The backend returned a sanitized file artifact rather than text, so no inline preview is shown.
+            The backend returned a sanitized file artifact rather than text, so no inline preview is
+            shown.
           </p>
         </div>
       )}
@@ -88,9 +103,9 @@ export function SanitizedPreview({ redaction, originalText }: SanitizedPreviewPr
       ) : null}
 
       <p className="mt-3 font-serif text-sm text-muted-foreground">
-        Saved as a new file: <span className="font-mono text-xs">{downloadName}</span> — the original input is never
-        overwritten. Results depend on the backend parser and redaction implementation; for complex formats, verify
-        the exported file before sharing.
+        Saved as a new file: <span className="font-mono text-xs">{downloadName}</span> — the
+        original input is never overwritten. Results depend on the backend parser and redaction
+        implementation; for complex formats, verify the exported file before sharing.
       </p>
     </section>
   );

@@ -9,7 +9,7 @@ export function FormatStrip() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 sm:px-6">
         <span className="flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-ink">
           <span aria-hidden className="inline-block size-2 bg-spicy" />
-          Redacts
+          Supported format targets
         </span>
         <ul className="flex flex-wrap items-center gap-2">
           {FORMATS.map((format) => (

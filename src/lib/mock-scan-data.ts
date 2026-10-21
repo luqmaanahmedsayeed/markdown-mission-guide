@@ -5,11 +5,7 @@
 // fixtures let the interface be reviewed before the Vercel backend exists,
 // and must never be presented as analysis of a user's real input.
 
-import {
-  type PiiFinding,
-  type RedactionStrategy,
-  type ScanResponse,
-} from "./pii-sentinel-types";
+import { type PiiFinding, type RedactionStrategy, type ScanResponse } from "./pii-sentinel-types";
 
 export const DEMO_SAMPLE_TEXT = `SYNTHETIC DEMO DOCUMENT — PII SENTINEL
 Every name, identifier and value in this file is fabricated sample data for demonstration only.
@@ -67,7 +63,8 @@ function at(value: string, occurrence = 1): { start: number; end: number } {
 /** Deterministic masking for fixture display values. */
 function maskValue(value: string): string {
   if (value.length <= 4) return "•".repeat(value.length);
-  if (value.length <= 8) return `${value.slice(0, 1)}${"•".repeat(value.length - 2)}${value.slice(-1)}`;
+  if (value.length <= 8)
+    return `${value.slice(0, 1)}${"•".repeat(value.length - 2)}${value.slice(-1)}`;
   return `${value.slice(0, 2)}${"•".repeat(value.length - 6)}${value.slice(-4)}`;
 }
 

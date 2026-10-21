@@ -13,7 +13,8 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "PII Sentinel — Scan Before You Share" },
       {
         property: "og:description",
-        content: "Find personal information in documents and prepare a sanitized copy before sharing.",
+        content:
+          "Find personal information in documents and prepare a sanitized copy before sharing.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
